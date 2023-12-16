@@ -1,7 +1,6 @@
 # --------------------------------------------------------------------------------------------------------------
 # Code skeleton based on https://www.geeksforgeeks.org/implement-convolutional-autoencoder-in-pytorch-with-cuda/
 # --------------------------------------------------------------------------------------------------------------
-
 import os
 from datetime import datetime
 import numpy as np
@@ -16,13 +15,15 @@ from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 from PIL import Image
 from torch.utils.data import DataLoader
-RESIZE = 48
-EPOCHS = 50
+RESIZE = 64
+EPOCHS = 25
 TRAIN = False
 ONLY_PROCESS = False
-IMPATH= [r""]
-TRAINVALBATCH = 16
-STOREBATCH = 1024
+IMPATH= r"flowers\flowers-102\jpg\image_00001.jpg"
+SOURCE_IMGS=[r""]
+TRAINVALBATCH = 128
+STOREBATCH = 1024*64//RESIZE
+
 class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
