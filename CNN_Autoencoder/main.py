@@ -15,42 +15,50 @@ from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 from PIL import Image
 from torch.utils.data import DataLoader
+
 RESIZE = 64
-EPOCHS = 25
+EPOCHS = 50
 TRAIN = False
 ONLY_PROCESS = False
-IMPATH= r"flowers\flowers-102\jpg\image_00001.jpg"
-SOURCE_IMGS=[r""]
-TRAINVALBATCH = 128
+IMPATH= r""]
+TRAINVALBATCH = 32
 STOREBATCH = 1024*64//RESIZE
 
 class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
+            nn.Conv2d(3, 16, (3, 3), padding=(1, 1)),
+            nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
+            nn.Conv2d(16, 32, (3, 3), padding=(1, 1)),
+            nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
-            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
+            nn.Conv2d(32, 64, (3, 3), padding=(1, 1)),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(64, 128, (3, 3), padding=(1, 1)),
+            nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
         
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(),
 
-            nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(),
+            nn.ConvTranspose2d(128, 64, (2, 2), stride=(2, 2)),
+            nn.ReLU(inplace=True),
 
-            nn.ConvTranspose2d(64, 3, kernel_size=3, stride=2, padding=1, output_padding=1),
-            nn.Sigmoid()
+            nn.ConvTranspose2d(64, 32, (2, 2), stride=(2, 2)),
+            nn.ReLU(inplace=True),
+
+            nn.ConvTranspose2d(32, 16, (2, 2), stride=(2, 2)),
+            nn.ReLU(inplace=True),
+
+            nn.ConvTranspose2d(16, 3, (2, 2), stride=(2, 2)),
+            nn.Sigmoid(),
         )
 
     def forward(self, x):
