@@ -16,49 +16,44 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from torch.utils.data import DataLoader
 
-RESIZE = 64
-EPOCHS = 50
+RESIZE = 32
+EPOCHS = 25
 TRAIN = False
-ONLY_PROCESS = False
-IMPATH= r""]
+ONLY_PROCESS = True
+IMPATH= r"flowers\flowers-102\jpg\image_01971.jpg"
+SOURCE_IMGS=[r""]
 TRAINVALBATCH = 32
-STOREBATCH = 1024*64//RESIZE
+STOREBATCH = 1024
 
 class Autoencoder(nn.Module):
     def __init__(self):
         super(Autoencoder, self).__init__()
+        
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 16, (3, 3), padding=(1, 1)),
-            nn.ReLU(inplace=True),
+            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
-            nn.Conv2d(16, 32, (3, 3), padding=(1, 1)),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(32, 64, (3, 3), padding=(1, 1)),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(64, 128, (3, 3), padding=(1, 1)),
-            nn.ReLU(inplace=True),
+            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
+            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
         
         self.decoder = nn.Sequential(
+            nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
+            nn.ConvTranspose2d(256, 128, kernel_size=3, stride=1, padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
 
-            nn.ConvTranspose2d(128, 64, (2, 2), stride=(2, 2)),
-            nn.ReLU(inplace=True),
-
-            nn.ConvTranspose2d(64, 32, (2, 2), stride=(2, 2)),
-            nn.ReLU(inplace=True),
-
-            nn.ConvTranspose2d(32, 16, (2, 2), stride=(2, 2)),
-            nn.ReLU(inplace=True),
-
-            nn.ConvTranspose2d(16, 3, (2, 2), stride=(2, 2)),
-            nn.Sigmoid(),
+            nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
+            nn.ConvTranspose2d(64, 3, kernel_size=3, stride=1, padding=1),
+            nn.Sigmoid()
         )
 
     def forward(self, x):
@@ -267,5 +262,5 @@ else:
         torch.save(encoded_dataset, 'encoded_dataset.pth')
         print("Encoded dataset saved successfully.")
     tStamp = datetime.now()
-    for imPath in SOURCE_IMGS:
-        find_similar_images(autoencoder_model, dataset_path + r"\flowers-102\jpg", en_dataset_path, imPath, tStamp)
+    
+    find_similar_images(autoencoder_model, dataset_path + r"\flowers-102\jpg", en_dataset_path, input_image_path, tStamp)
