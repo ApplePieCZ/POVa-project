@@ -6,27 +6,33 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 
-def compute_sift(image_path):
+def compute(image_path):
     image = cv2.imread(image_path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    sift = cv2.SIFT_create()
-    image_keypoints, image_descriptors = sift.detectAndCompute(gray, None)
-    return image_keypoints, image_descriptors
+    _, image_descriptors = algo.detectAndCompute(gray, None)
+    return image_descriptors
 
 
 def process_image(image):
-    _, descriptors = compute_sift(f"{reference_images_path}/{image}")
+    descriptors = compute(f"{reference_images_path}/{image}")
     matches = bf.match(query_descriptors, descriptors)
     return len(matches)
 
 
 if __name__ == "__main__":
+    sift = True
+
+    if sift:
+        algo = cv2.SIFT_create()
+    else:
+        algo = cv2.ORB_create()
+
     query_image_path = 'jpg/image_00001.jpg'
     reference_images_path = 'flowers/flowers-102/jpg'
     start_time = time.time()
 
     query_image = cv2.imread(query_image_path)
-    _, query_descriptors = compute_sift(query_image_path)
+    query_descriptors = compute(query_image_path)
 
     jpg_files = [f for f in os.listdir(reference_images_path) if f.endswith('.jpg')][:1000]
 
