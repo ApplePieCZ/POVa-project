@@ -7,6 +7,7 @@ import os
 import matplotlib.pyplot as plt
 from concurrent.futures import ThreadPoolExecutor
 import argparse
+import time
 
 
 def compute(image_path):
@@ -26,8 +27,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="SIFT/ORB based CBIR.")
     parser.add_argument("-i", type=str, help="Query image")
     parser.add_argument("-d", type=str, help="Path to reference images")
-    parser.add_argument("-c", type=int, help="Path to reference images")
-    parser.add_argument("-s", action='store_true', help="Path to reference images")
+    parser.add_argument("-c", type=int, help="Size of dataset to clip")
+    parser.add_argument("-s", action='store_true', help="If SIFT is used.")
 
     args = parser.parse_args()
 
@@ -44,6 +45,7 @@ if __name__ == "__main__":
     query_image_path = args.i
     reference_images_path = args.d
 
+    start_time = time.time()
     query_image = cv2.imread(query_image_path)
     query_descriptors = compute(query_image_path)
 
@@ -53,6 +55,8 @@ if __name__ == "__main__":
 
     with ThreadPoolExecutor() as executor:
         images_matches = list(executor.map(process_image, jpg_files))
+
+    print(f"{time.time() - start_time:.2f}")
 
     closest_images = np.argsort(images_matches)[-6:]
 
