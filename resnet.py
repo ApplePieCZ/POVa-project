@@ -1,6 +1,6 @@
 # POVa Project - CBIR
 # Lukas Marek
-# 17.12.2023
+# 20.12.2023
 import os
 import matplotlib.pyplot as plt
 import torch
@@ -17,9 +17,12 @@ import argparse
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
+
 def load_resnet50():
-    # Load the pretrained ResNet-50 model
-    model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
+    # Load the pretrained model
+    model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)  # Pretty good
+    # model = models.efficientnet_v2_s(weights=models.EfficientNet_V2_S_Weights.IMAGENET1K_V1)  # Good
+    # model = models.alexnet(weights=models.AlexNet_Weights.IMAGENET1K_V1)  # Good
     model.to(device)
     return model
 
@@ -80,8 +83,6 @@ if __name__ == "__main__":
     parser.add_argument("-c", type=int, help="Size of dataset to clip")
     parser.add_argument("-f", action='store_true', help="If features are stored.")
 
-    features = False
-
     args = parser.parse_args()
 
     query_image_path = args.i
@@ -135,4 +136,4 @@ if __name__ == "__main__":
     for ax in axes.flatten():
         ax.axis('off')
 
-    plt.show()
+    #plt.show()
