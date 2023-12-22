@@ -1,37 +1,60 @@
 import torch.nn as nn
 
-# train_val_batch = 32
-# resize = 32
-# epochs = 25
-class NFS_autoencoder(nn.Module):
+
+# train_val_batch = 64
+# resize = 64
+# epochs = 50
+class TN_Autoencoder(nn.Module):
     def __init__(self):
-        self.code_name = "NFS"
-        super(NFS_autoencoder, self).__init__()
-        # Encoder
+        super(TN_Autoencoder, self).__init__()
+
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
-            nn.LeakyReLU(negative_slope=0.01),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
             nn.LeakyReLU(negative_slope=0.01),
             nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
-            nn.LeakyReLU(negative_slope=0.01),
-            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(16, 4, kernel_size=3, stride=1, padding=1),
             nn.LeakyReLU(negative_slope=0.01),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
-        # Decoder
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.ConvTranspose2d(4, 16, kernel_size=3, stride=2, padding=1, output_padding=1),
             nn.LeakyReLU(negative_slope=0.01),
-            nn.ConvTranspose2d(256, 128, kernel_size=3, stride=1, padding=1),
-            nn.LeakyReLU(negative_slope=0.01),
+            nn.ConvTranspose2d(16, 3, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.Sigmoid()
+        )
 
-            nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1),
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x
+
+# train_val_batch = 64
+# resize = 128
+# epochs = 50
+class IR_Autoencoder(nn.Module):
+    def __init__(self):
+        super(IR_Autoencoder, self).__init__()
+        
+        
+        self.encoder = nn.Sequential(
+            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
             nn.LeakyReLU(negative_slope=0.01),
-            nn.ConvTranspose2d(64, 3, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(16, 8, kernel_size=3, stride=1, padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(8, 4, kernel_size=3, stride=1, padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+        )
+
+        
+        self.decoder = nn.Sequential(
+            nn.ConvTranspose2d(4, 8, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
+            nn.ConvTranspose2d(8, 16, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.LeakyReLU(negative_slope=0.01),
+            nn.ConvTranspose2d(16, 3, kernel_size=3, stride=1, padding=1),
             nn.Sigmoid()
         )
 
@@ -41,36 +64,35 @@ class NFS_autoencoder(nn.Module):
         return x
 
 
-# train_val_batch = 32
-# resize = 32
-# epochs = 25
-class IDEK_Autoencoder(nn.Module):
+
+class NFS_autoencoder(nn.Module):
     def __init__(self):
-        super(IDEK_Autoencoder, self).__init__()
-        # Encoder
+        self.code_name = "NFS"
+        super(NFS_autoencoder, self).__init__()
+        
         self.encoder = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(negative_slope=0.01),
             nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(negative_slope=0.01),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(negative_slope=0.01),
             nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(negative_slope=0.01),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
-        # Decoder
+        
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(negative_slope=0.01),
             nn.ConvTranspose2d(256, 128, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(negative_slope=0.01),
 
             nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(),
+            nn.LeakyReLU(negative_slope=0.01),
             nn.ConvTranspose2d(64, 3, kernel_size=3, stride=1, padding=1),
             nn.Sigmoid()
         )
@@ -107,7 +129,7 @@ class GBV2_Autoencoder(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
-        # Decoder
+        
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1),
             nn.ReLU(),
@@ -123,45 +145,6 @@ class GBV2_Autoencoder(nn.Module):
         x = self.encoder(x)
         x = self.decoder(x)
         return x
-
-# train_val_batch = 64
-# resize = 32
-# epochs = 50
-class GB_Autoencoder(nn.Module):
-    def __init__(self):
-        super(GB_Autoencoder, self).__init__()
-        self.encoder = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-        )
-
-        # Decoder
-        self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(256, 128, kernel_size=3, stride=1, padding=1),
-            nn.ReLU(),
-
-            nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(),
-            nn.ConvTranspose2d(64, 3, kernel_size=3, stride=1, padding=1),
-            nn.Sigmoid()
-        )
-
-    def forward(self, x):
-        x = self.encoder(x)
-        x = self.decoder(x)
-        return x
-
 
 # train_val_batch = 32
 # resize = 64
@@ -187,7 +170,7 @@ class BB_Autoencoder(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
-        # Decoder
+        
         self.decoder = nn.Sequential(
 
             nn.ConvTranspose2d(128, 64, (2, 2), stride=(2, 2)),

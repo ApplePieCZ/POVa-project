@@ -5,25 +5,28 @@ import torch
 from PIL import Image
 from matplotlib import image as mpimg, pyplot as plt
 from sklearn.neighbors import NearestNeighbors
+import time
 from torchvision import transforms as transforms
 
 from LocalDataset import encode, load_dataset_paths, load_encoded_dataset
 
 RESIZE = 32
-STOREBATCH = 1024
 
 
 def inference(autoencoder, only_process, image_src: list):
     autoencoder_model = load_autoencoder_model('conv_autoencoder.pth', autoencoder)
     en_dataset_path = 'encoded_dataset.pth'
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(device)
     autoencoder_model.to(device)
     if not only_process:
         encoded_dataset = encode(autoencoder_model, device, RESIZE)
         torch.save(encoded_dataset, 'encoded_dataset.pth')
     tStamp = datetime.now()
     for imPath in image_src:
-        find_similar_images(autoencoder_model, en_dataset_path, imPath, tStamp)
+        ftime = time.time()
+        find_similar_images(autoencoder_model, en_dataset_path, imPath, tStamp, device)
+        print(time.time() - ftime)
 
 
 def load_autoencoder_model(model_path, autoencoder):
@@ -61,8 +64,8 @@ def plot_and_save(dataset_paths, input_image_path, similar_indices, timestamp):
     plt.close()
 
 
-def find_similar_images(autoencoder_model, encoded_dataset_path, input_image_path, timestamp, k=5):
-    encoded_input = post_encode_image(autoencoder_model, input_image_path, RESIZE).flatten()
+def find_similar_images(autoencoder_model, encoded_dataset_path, input_image_path, timestamp, device, k=5):
+    encoded_input = post_encode_image(autoencoder_model, input_image_path, RESIZE, device).flatten()
     encoded_dataset = load_encoded_dataset(encoded_dataset_path)
     encoded_dataset = encoded_dataset.reshape(encoded_dataset.shape[0], -1)
     similar_indices = knn_search(encoded_input, encoded_dataset, k)
@@ -77,16 +80,16 @@ def knn_search(encoded_input, encoded_dataset, k=5):
     return indices[0][1:]
 
 
-def post_encode_image(self, image_path, resize):
+def post_encode_image(model, image_path, resize, device):
     transform1 = transforms.Compose([
         transforms.Resize((resize, resize)),
         transforms.ToTensor()
     ])
 
     image = Image.open(image_path).convert("RGB")
-    image = transform1(image).unsqueeze(0)
+    image = transform1(image).unsqueeze(0).to(device)
 
     with torch.no_grad():
-        encoded = self.encoder(image)
+        encoded = model.encoder(image)
 
-    return encoded.squeeze().numpy()
+    return encoded.squeeze().cpu().numpy()

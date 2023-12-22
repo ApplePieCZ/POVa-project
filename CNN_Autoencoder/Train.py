@@ -1,6 +1,3 @@
-# --------------------------------------------------------------------------------------------------------------
-# Code skeleton based on https://www.geeksforgeeks.org/implement-convolutional-autoencoder-in-pytorch-with-cuda/
-# --------------------------------------------------------------------------------------------------------------
 import torch
 from matplotlib import pyplot as plt
 from torch import nn as nn, optim as optim

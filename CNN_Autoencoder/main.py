@@ -1,23 +1,27 @@
-# --------------------------------------------------------------------------------------------------------------
-# Code skeleton based on https://www.geeksforgeeks.org/implement-convolutional-autoencoder-in-pytorch-with-cuda/
-# --------------------------------------------------------------------------------------------------------------
-from Autoencoder import NFS_autoencoder
+from Autoencoder import TN_Autoencoder
 from Inference import inference
 from Train import train
 
 TRAIN = False
 ONLY_PROCESS = True
-IMPATH= r"flowers\flowers-102\jpg\image_04947.jpg"
+IMPATH= r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_04947.jpg"
 
 
-SOURCE_IMGS=[r""]
+SOURCE_IMGS=[
+r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_00001.jpg",
+r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_00428.jpg",
+r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_00542.jpg",
+r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_01104.jpg",
+r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_02660.jpg",
+r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_03994.jpg"]
+
 
 def main():
-    autoencoder = NFS_autoencoder
+    autoencoder = TN_Autoencoder
     if TRAIN:
         train(autoencoder)
     else:
-        inference(autoencoder, ONLY_PROCESS, [IMPATH])
+        inference(autoencoder, ONLY_PROCESS, SOURCE_IMGS)
 
 
 
