@@ -23,3 +23,6 @@ $python ./main.py
 - for Comparison, set TRAIN to False and ONLY_PROCESS to False 
 - for Comparison with already encoded database set TRAIN to False and ONLY_PROCESS to True.
 
+**Metric learning**
+
+$python ./main.py
