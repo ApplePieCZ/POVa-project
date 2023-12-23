@@ -17,9 +17,7 @@ import argparse
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-
 def load_resnet50():
-    # Load the pretrained model
     model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)  # Pretty good
     # model = models.efficientnet_v2_s(weights=models.EfficientNet_V2_S_Weights.IMAGENET1K_V1)  # Good
     # model = models.alexnet(weights=models.AlexNet_Weights.IMAGENET1K_V1)  # Good
@@ -28,14 +26,12 @@ def load_resnet50():
 
 
 def preprocess_image(image_path):
-    # Load and preprocess the image
     image = Image.open(image_path)
     image_tensor = transform(image).unsqueeze(0)
     return image_tensor
 
 
 def extract_features(model, image_tensor):
-    # Extract features from image on GPU using ResNet
     with torch.no_grad():
         model.eval()
         features = model(image_tensor.to(device))
@@ -52,10 +48,8 @@ def compute_distances(query_features, dataset_features):
 
 
 def get_closest_images(image_path, model):
-    # Preprocess the query image
     query_tensor = preprocess_image(image_path)
 
-    # Extract features from the query image
     query_features = extract_features(model, query_tensor)
 
     dataset_features = []
@@ -63,13 +57,10 @@ def get_closest_images(image_path, model):
         batch_features = extract_features(model, batch_images[0])
         dataset_features.append(batch_features)
 
-    # Concatenate features from all batches
     dataset_features = torch.cat(dataset_features, dim=0)
 
-    # Compute distances
     distances = compute_distances(query_features.squeeze(), dataset_features.squeeze())
 
-    # Get indices of 6 closest images
     closest_indices = np.argsort(distances)[:6]
 
     return closest_indices
@@ -136,4 +127,4 @@ if __name__ == "__main__":
     for ax in axes.flatten():
         ax.axis('off')
 
-    #plt.show()
+    plt.show()
