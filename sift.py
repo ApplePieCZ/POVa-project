@@ -1,6 +1,6 @@
 # POVa Project - CBIR
 # Lukas Marek, with help of Tomas Krsicka
-# 20.12.2023
+# 23.12.2023
 import cv2
 import numpy as np
 import os
@@ -84,9 +84,9 @@ if __name__ == "__main__":
 
     FLANN_INDEX_LSH = 6
     index2_params = dict(algorithm=FLANN_INDEX_LSH,
-                         table_number=12,  # 12
-                         key_size=20,  # 20
-                         multi_probe_level=2)  # 2
+                         table_number=12,
+                         key_size=20,
+                         multi_probe_level=2)
     flann_orb = cv2.FlannBasedMatcher(index2_params, search_params)
 
     start_time = time.time()
@@ -99,8 +99,12 @@ if __name__ == "__main__":
 
     bf = cv2.BFMatcher()
 
-    with ThreadPoolExecutor() as executor:
-        images_matches = list(executor.map(process_image_flann_orb, jpg_files))
+    if args.s:
+        with ThreadPoolExecutor() as executor:
+            images_matches = list(executor.map(process_image_flann, jpg_files))
+    else:
+        with ThreadPoolExecutor() as executor:
+            images_matches = list(executor.map(process_image_flann_orb, jpg_files))
 
     print(f"{time.time() - start_time:.2f}")
 

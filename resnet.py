@@ -53,7 +53,10 @@ def get_closest_images(image_path, model):
     query_features = extract_features(model, query_tensor)
 
     dataset_features = []
+    counter = 0
     for batch_images in data_loader:
+        print(f"{counter}/{len(data_loader)}")
+        counter += 1
         batch_features = extract_features(model, batch_images[0])
         dataset_features.append(batch_features)
 
