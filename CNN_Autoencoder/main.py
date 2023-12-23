@@ -2,18 +2,18 @@ from Autoencoder import TN_Autoencoder
 from Inference import inference
 from Train import train
 
-TRAIN = False
-ONLY_PROCESS = True
-IMPATH= r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_04947.jpg"
+TRAIN = True
+ONLY_PROCESS = False
+IMPATH= r"flowers\flowers-102\jpg\image_04947.jpg"
 
 
 SOURCE_IMGS=[
-r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_00001.jpg",
-r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_00428.jpg",
-r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_00542.jpg",
-r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_01104.jpg",
-r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_02660.jpg",
-r"C:\Users\tomkr\PycharmProjects\autoencoder\flowers\flowers-102\jpg\image_03994.jpg"]
+r"flowers\flowers-102\jpg\image_00001.jpg",
+r"flowers\flowers-102\jpg\image_00428.jpg",
+r"flowers\flowers-102\jpg\image_00542.jpg",
+r"flowers\flowers-102\jpg\image_01104.jpg",
+r"flowers\flowers-102\jpg\image_02660.jpg",
+r"flowers\flowers-102\jpg\image_03994.jpg"]
 
 
 def main():

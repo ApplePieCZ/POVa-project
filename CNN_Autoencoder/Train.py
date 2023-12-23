@@ -4,9 +4,9 @@ from torch import nn as nn, optim as optim
 from torchvision import transforms as transforms, datasets as datasets
 from DataLoader import get_DataLoader
 
-EPOCHS = 25
-RESIZE = 32
-TRAINVALBATCH = 32
+EPOCHS = 50
+RESIZE = 64
+TRAINVALBATCH = 64
 
 
 def get_transform(resize):
